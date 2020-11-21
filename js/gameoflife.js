@@ -90,11 +90,31 @@ const willBeAlive = (cell, state) => {
 
 };
 
-const calculateNext = (state) => {};
+const calculateNext = (state) => {
+  const {bottomLeft, topRight } = corners(state);
 
-const iterate = (state, iterations) => {};
+  let next = [];
 
-const main = (pattern, iterations) => {};
+  for (y = topRight[1] + 1; y >= bottomLeft[1] - 1; y--) {
+    for (x = bottomLeft[0] - 1; x <= topRight[0]; x++) {
+      next = next.concat(willBeAlive([x, y], state) ? [[x,y]] : []);
+    }
+  }
+  return next;
+};
+
+const iterate = (state, iterations) => {
+  const iterationStates = [state];
+  for(let i = 0; i < iterations; i++) {
+      iterationStates.push(calculateNext(iterationStates[i]));
+  }
+  return iterationStates;
+};
+
+const main = (pattern, iterations) => {
+  const results = iterate(startPatterns[pattern], iterations);
+  results.forEach(r => console.log(printCells(r)));
+};
 
 const startPatterns = {
     rpentomino: [
