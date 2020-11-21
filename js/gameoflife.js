@@ -1,15 +1,65 @@
-function seed() {}
+function seed() {
+  let argsLength = arguments.length;
+  let argsArray = [];
+  for (let index = 0; index < argsLength; index++) {
+    argsArray.push(arguments[index]);
+  }
 
-function same([x, y], [j, k]) {}
+  return argsArray;
+}
+
+function same([x, y], [j, k]) {
+  return x === j && y === k;
+}
 
 // The game state to search for `cell` is passed as the `this` value of the function.
-function contains(cell) {}
+function contains(cell) {
+  return this.some((c) => same(c, cell));
+}
 
-const printCell = (cell, state) => {};
+const printCell = (cell, state) => {
+  return contains.call(state, cell) ? "\u25A3" : "\u25A2";
+};
 
-const corners = (state = []) => {};
+const corners = (state = []) => {
+  if (state.length === 0) {
+    return {
+      topRight: [0,0],
+      bottomLeft: [0, 0]
+    }
+  }
 
-const printCells = (state) => {};
+  let xAxis = [];
+  let yAxis = [];
+
+  for (i = 0; i < state.length; i++) {
+    xAxis.push(state[i][0]);
+    yAxis.push(state[i][1]);
+  }
+
+  return {
+    topRight: [Math.max (...xAxis), Math.max(...yAxis)],
+    bottomLeft: [Math.min(...xAxis), Math.min(...yAxis)]
+  };
+
+};
+
+const printCells = (state) => {
+  const { bottomLeft, topRight } = corners(state);
+  
+  let cells = "";
+
+  for (y = topRight[1]; y >= bottomLeft[1]; y--) {
+    let row = [];
+    for (x = bottomLeft[0]; x <= topRight[0]; x++) {
+      row.push(printCell([x, y], state));
+    }
+    cells += row.join(" ") + "\n";
+  }
+
+  return cells;
+
+};
 
 const getNeighborsOf = ([x, y]) => {};
 
